@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  database:
+    image: bitnami/postgresql:latest
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - pg_database:/bitnami/postgresql
+  app:
+    depends_on:
+      - database
+    build: .
+    env_file: ./.env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+      
+volumes:
+  pg_database:
