@@ -1,0 +1,4 @@
+.eslintrc.*
+dist/*
+tsconfig.json
+tsconfig.build.json
