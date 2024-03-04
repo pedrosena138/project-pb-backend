@@ -18,6 +18,6 @@ app.get('/lawyers', async (request, response) => {
 })
 
 // @ts-expect-error
-app.listen({ port: 3000 }).then(() => {
+app.listen({ port: process.env.APP_PORT }).then(() => {
   console.log(`Server listening on port ${process.env.APP_PORT}`)
 })
