@@ -23,6 +23,8 @@ module.exports = {
     },
     "rules": {
         "@typescript-eslint/no-floating-promises": "off",
-        "@typescript-eslint/ban-ts-comment": "off"
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/unbound-method": "off"
+        
     }
 }

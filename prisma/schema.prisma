@@ -11,8 +11,34 @@ datasource db {
 }
 
 model Lawyer {
-  id   String @id @default(uuid())
-  name String
+  id        String  @id @default(cuid())
+  name      String
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id])
 
-  @@map("lawyer")
+  @@map("lawyers")
+}
+
+model Profile {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  password   String
+  active     Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  last_login DateTime?
+  client     Client?
+  lawyer     Lawyer?
+
+  @@map("profiles")
+}
+
+model Client {
+  id        String @id @default(cuid())
+  name      String
+  profileId String @unique
+
+  profile Profile @relation(fields: [profileId], references: [id])
+
+  @@map("clients")
 }

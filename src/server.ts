@@ -1,23 +1,51 @@
-import fastify from 'fastify'
-import dotnev from 'dotenv'
-import { PrismaClient } from '@prisma/client'
-import httpStatus from 'http-status'
+import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
+import fjwt, { type FastifyJWT } from '@fastify/jwt'
+import fCookie from '@fastify/cookie'
+import { clientRoutes, profileRoutes } from './routes'
+import dotenv from 'dotenv'
+dotenv.config()
 
-dotnev.config()
-
-const app = fastify()
-const prisma = new PrismaClient()
-
-app.get('/', () => {
-  return { message: 'Hello world!' }
-})
-
-app.get('/lawyers', async (request, response) => {
-  const lawyers = await prisma.lawyer.findMany()
-  return await response.status(httpStatus.OK).send({ lawyers })
-})
+const fastify = Fastify({ logger: process.env.ENV === 'dev' ?? true })
 
 // @ts-expect-error
-app.listen({ port: process.env.APP_PORT }).then(() => {
+fastify.register(fjwt, { secret: process.env.SECRET_KEY })
+fastify.addHook('preHandler', (req, res, next) => {
+  req.jwt = fastify.jwt
+  next()
+})
+
+fastify.register(fCookie, {
+  secret: process.env.SECRET_KEY,
+  hook: 'preHandler'
+})
+
+fastify.decorate(
+  'authenticate',
+  async (req: FastifyRequest, reply: FastifyReply) => {
+    const token = req.cookies.access_token
+
+    if (token === null || token === undefined) {
+      return await reply
+        .status(401)
+        .send({ message: 'Authentication required' })
+    }
+
+    const decoded = req.jwt.verify<FastifyJWT['profile']>(token)
+    req.user = decoded
+  }
+)
+
+fastify.get('/healthcheck', { preHandler: fastify.authenticate }, (req, res) => {
+  res.send({ test: req.user })
+})
+
+fastify.register(profileRoutes, { prefix: '/api' })
+fastify.register(clientRoutes, { prefix: '/api/clients' })
+
+// @ts-expect-error
+fastify.listen({ port: process.env.APP_PORT }).then(() => {
   console.log(`Server listening on port ${process.env.APP_PORT}`)
+}).catch((err) => {
+  fastify.log.error(err)
+  process.exit(1)
 })
