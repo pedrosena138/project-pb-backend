@@ -35,7 +35,7 @@ fastify.decorate(
   }
 )
 
-fastify.get('/healthcheck', { preHandler: fastify.authenticate }, (req, res) => {
+fastify.get('/api/healthcheck', { preHandler: fastify.authenticate }, (req, res) => {
   res.send({ test: req.user })
 })
 

@@ -2,6 +2,7 @@ import { type PrismaClient } from '@prisma/client'
 import { type ProfilesRepository } from '../../../app/repositories/profilesRepositories'
 
 class ProfileMapper {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   static toDomain (data: any, role: string) {
     const profile = role === 'client' ? data.client : data.lawyer
 
@@ -16,7 +17,7 @@ class ProfileMapper {
 
 export class PrismaProfilesRepository implements ProfilesRepository {
   constructor (private readonly client: PrismaClient) {}
-  async findByEmailAndPassword (email: string, password: string, role: string): Promise<{ active: boolean, id: string } | null> {
+  async findByEmailAndPassword (email: string, password: string, role: string): Promise<any> {
     const profile = await this.client.profile.findFirst({
       select: {
         id: true,
