@@ -1,6 +1,7 @@
 import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import fjwt, { type FastifyJWT } from '@fastify/jwt'
 import fCookie from '@fastify/cookie'
+import { UNAUTHORIZED } from 'http-status'
 import { clientRoutes, profileRoutes } from './routes'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -26,7 +27,7 @@ fastify.decorate(
 
     if (token === null || token === undefined) {
       return await reply
-        .status(401)
+        .status(UNAUTHORIZED)
         .send({ message: 'Authentication required' })
     }
 
@@ -35,8 +36,8 @@ fastify.decorate(
   }
 )
 
-fastify.get('/api/healthcheck', { preHandler: fastify.authenticate }, (req, res) => {
-  res.send({ test: req.user })
+fastify.get('/api/healthcheck', (req, res) => {
+  res.send({ message: 'Successful' })
 })
 
 fastify.register(profileRoutes, { prefix: '/api' })
