@@ -131,3 +131,7 @@ dist
 
 # Temp files
 temp/
+
+# Prisma
+*.db
+*.db-journal
