@@ -23,7 +23,7 @@ export class LoginUseCase {
     if (!isMatch) {
       throw badRequestError
     }
-
+    await this.profileRepository.updateLastLogin(profile.id)
     return profile
   }
 }

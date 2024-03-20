@@ -4,17 +4,21 @@ import { prismaClientsRepository, prismaProfilesRepository } from './infra/datab
 import { type FastifyInstance } from 'fastify'
 import { CreateClientUseCase } from './app/useCases/createClient'
 import { ClientsController } from './infra/http/controlers/clientsController'
-import { UploadFilesUseCase } from './app/useCases/uploadFiles'
+import { UploadIdentityFilesUseCase } from './app/useCases/uploadIdentityFiles'
 
 const loginUseCase = new LoginUseCase(prismaProfilesRepository)
 const createClientUseCase = new CreateClientUseCase(
   prismaClientsRepository,
   prismaProfilesRepository
 )
-const uploadFilesUseCase = new UploadFilesUseCase()
+const uploadIdentityFilesUseCase = new UploadIdentityFilesUseCase(
+  prismaClientsRepository)
 
 const profilesController = new ProfilesController(loginUseCase)
-const clientsController = new ClientsController(createClientUseCase, uploadFilesUseCase)
+const clientsController = new ClientsController(
+  createClientUseCase,
+  uploadIdentityFilesUseCase
+)
 
 export async function profileRoutes (fastify: FastifyInstance): Promise<void> {
   fastify.post('/login', async (request, reply) => {
@@ -45,7 +49,13 @@ export async function clientRoutes (fastify: FastifyInstance): Promise<void> {
     await clientsController.create(request, reply)
   })
 
-  fastify.post('/clients/upload', async (request, reply) => {
-    await clientsController.uploadFiles(request, reply)
-  })
+  fastify.post(
+    '/clients/upload',
+    {
+      preHandler: [fastify.authenticate]
+    },
+    async (request, reply) => {
+      await clientsController.uploadFiles(request, reply)
+    }
+  )
 }

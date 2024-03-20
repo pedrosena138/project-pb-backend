@@ -26,6 +26,14 @@ class ProfileMapper {
 
 export class PrismaProfilesRepository implements ProfilesRepository {
   constructor (private readonly prisma: PrismaClient) {}
+  async updateLastLogin (id: string): Promise<void> {
+    await this.prisma.profile.update({
+      where: { id },
+      data: {
+        lastLogin: new Date()
+      }
+    })
+  }
 
   async findByEmail (email: string): Promise<ProfileEntity | null> {
     const query = await this.prisma.profile.findFirst({

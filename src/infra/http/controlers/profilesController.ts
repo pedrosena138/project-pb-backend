@@ -16,7 +16,10 @@ export class ProfilesController {
         password
       })
 
-      const token = request.jwt.sign(payload)
+      const token = request.jwt.sign({
+        id: payload.id,
+        email: payload.email
+      })
       reply.setCookie('access_token', token, {
         path: '/api/',
         httpOnly: true,

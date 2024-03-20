@@ -4,6 +4,16 @@ import { type ClientsRepository } from 'src/app/repositories/clientsRepository'
 
 export class PrismaClientsRepository implements ClientsRepository {
   constructor (private readonly prisma: PrismaClient) {}
+  async saveFiles (paths: string[], profileId: string): Promise<void> {
+    const strPaths = paths.join(';')
+    await this.prisma.client.update({
+      where: { profileId },
+      data: {
+        documentsPaths: strPaths,
+        updatedAt: new Date()
+      }
+    })
+  }
 
   async create (client: ClientEntity): Promise<void> {
     await this.prisma.client.create({

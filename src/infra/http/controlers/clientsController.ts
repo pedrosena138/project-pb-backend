@@ -2,12 +2,12 @@ import { type FastifyRequest, type FastifyReply } from 'fastify'
 import { INTERNAL_SERVER_ERROR, CREATED, OK } from 'http-status'
 import { type CreateClientUseCase } from '../../../app/useCases/createClient'
 import { createClientBodyDto } from '../dtos/clientDtos'
-import { type UploadFilesUseCase } from 'src/app/useCases/uploadFiles'
+import { type UploadIdentityFilesUseCase } from '../../../app/useCases/uploadIdentityFiles'
 
 export class ClientsController {
   constructor (
     private readonly createClientUseCase: CreateClientUseCase,
-    private readonly uploadFilesUseCase: UploadFilesUseCase
+    private readonly uploadIdentityFilesUseCase: UploadIdentityFilesUseCase
   ) {}
 
   async create (
@@ -52,8 +52,10 @@ export class ClientsController {
     reply: FastifyReply
   ): Promise<FastifyReply> {
     try {
+      // @ts-expect-error
+      const profileId: string = req.user.id
       const parts = req.files()
-      await this.uploadFilesUseCase.execute(parts)
+      await this.uploadIdentityFilesUseCase.execute(parts, profileId)
       return await reply.status(OK).send()
     } catch (err: any) {
       console.error(err)
