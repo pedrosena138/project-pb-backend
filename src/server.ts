@@ -41,7 +41,7 @@ fastify.get('/api/healthcheck', (req, res) => {
 })
 
 fastify.register(profileRoutes, { prefix: '/api' })
-fastify.register(clientRoutes, { prefix: '/api/clients' })
+fastify.register(clientRoutes, { prefix: '/api' })
 
 // @ts-expect-error
 fastify.listen({ port: process.env.APP_PORT }).then(() => {

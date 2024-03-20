@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/pedrosena138/project-pb-backend#readme",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/http-errors": "^2.0.4",
     "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "eslint": "^8.56.0",
@@ -30,7 +32,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "prisma": "^5.10.2",
+    "prisma": "^5.11.0",
     "tsup": "^8.0.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
@@ -39,12 +41,14 @@
   "dependencies": {
     "@fastify/cookie": "^9.3.1",
     "@fastify/jwt": "^8.0.0",
-    "@prisma/client": "^5.10.2",
+    "@prisma/client": "^5.11.0",
     "@swc/core": "^1.4.0",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.1",
     "fastify": "^4.26.0",
     "fastify-zod": "^1.4.0",
-    "http-status": "^1.7.3",
+    "http-errors": "^2.0.0",
+    "http-status": "^1.7.4",
     "zod": "^3.22.4"
   }
 }
