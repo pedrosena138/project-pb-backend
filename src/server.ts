@@ -1,6 +1,7 @@
 import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import fjwt, { type FastifyJWT } from '@fastify/jwt'
 import fCookie from '@fastify/cookie'
+import multipart from '@fastify/multipart'
 import { UNAUTHORIZED } from 'http-status'
 import { clientRoutes, profileRoutes } from './routes'
 import dotenv from 'dotenv'
@@ -8,6 +9,7 @@ dotenv.config()
 
 const fastify = Fastify({ logger: process.env.ENV === 'dev' ?? true })
 
+fastify.register(multipart)
 // @ts-expect-error
 fastify.register(fjwt, { secret: process.env.SECRET_KEY })
 fastify.addHook('preHandler', (req, res, next) => {

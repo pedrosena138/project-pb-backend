@@ -24,6 +24,7 @@ export class ProfilesController {
       })
       return await reply.status(OK).send({ accessToken: token })
     } catch (err: any) {
+      console.error(err)
       const statusCode = err.statusCode ?? INTERNAL_SERVER_ERROR
       return await reply.status(statusCode).send({ error: err.message })
     }
