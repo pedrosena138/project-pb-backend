@@ -12,6 +12,7 @@ declare module 'fastify' {
 interface ProfilePayload {
   id: string
   email: string
+  role: string
 }
 
 declare module '@fastify/jwt' {

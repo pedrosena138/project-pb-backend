@@ -41,14 +41,6 @@ export async function clientRoutes (fastify: FastifyInstance): Promise<void> {
     await clientsController.create(request, reply)
   })
 
-  fastify.patch('/clients', async (request, reply) => {
-    await clientsController.update(request, reply)
-  })
-
-  fastify.get('/clients/:id', async (request, reply) => {
-    await clientsController.create(request, reply)
-  })
-
   fastify.post(
     '/clients/upload',
     {

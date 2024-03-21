@@ -1,9 +1,10 @@
 import { z } from 'zod'
-import { emailType } from './types'
+import { emailType, roleType } from './types'
 
 export const loginBodyDto = z.object({
   email: emailType,
-  password: z.string()
+  password: z.string(),
+  role: roleType
 })
 
 export type LoginBodyDto = z.infer<typeof loginBodyDto>

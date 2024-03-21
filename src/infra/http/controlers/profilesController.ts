@@ -10,15 +10,17 @@ export class ProfilesController {
     reply: FastifyReply
   ): Promise<FastifyReply> {
     try {
-      const { email, password } = loginBodyDto.parse(request.body)
+      const { email, password, role } = loginBodyDto.parse(request.body)
       const payload = await this.loginUseCase.execute({
         email,
-        password
+        password,
+        role
       })
 
       const token = request.jwt.sign({
         id: payload.id,
-        email: payload.email
+        email: payload.email,
+        role
       })
       reply.setCookie('access_token', token, {
         path: '/api/',
