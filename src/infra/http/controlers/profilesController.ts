@@ -1,7 +1,7 @@
 import { type FastifyRequest, type FastifyReply } from 'fastify'
-import { INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from 'http-status'
+import { INTERNAL_SERVER_ERROR, OK } from 'http-status'
 import { loginBodyDto } from '../dtos/profileDtos'
-import { type LoginUseCase } from '../../../app/useCases/loginUseCase'
+import { type LoginUseCase } from '../../../app/useCases/login'
 
 export class ProfilesController {
   constructor (private readonly loginUseCase: LoginUseCase) {}
@@ -10,26 +10,26 @@ export class ProfilesController {
     reply: FastifyReply
   ): Promise<FastifyReply> {
     try {
-      const { email, password, role } = loginBodyDto.parse(request.body)
+      const { email, password } = loginBodyDto.parse(request.body)
       const payload = await this.loginUseCase.execute({
         email,
-        password,
-        role
+        password
       })
-      if (payload == null) {
-        return await reply
-          .status(NOT_FOUND)
-          .send({ message: 'Usuário não encontrado' })
-      }
-      const token = request.jwt.sign(payload)
+
+      const token = request.jwt.sign({
+        id: payload.id,
+        email: payload.email
+      })
       reply.setCookie('access_token', token, {
         path: '/api/',
         httpOnly: true,
         secure: true
       })
       return await reply.status(OK).send({ accessToken: token })
-    } catch (err) {
-      return await reply.status(INTERNAL_SERVER_ERROR).send({ err })
+    } catch (err: any) {
+      console.error(err)
+      const statusCode = err.statusCode ?? INTERNAL_SERVER_ERROR
+      return await reply.status(statusCode).send({ error: err.message })
     }
   }
 

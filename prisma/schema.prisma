@@ -1,12 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -20,23 +17,28 @@ model Lawyer {
 }
 
 model Profile {
-  id         String    @id @default(cuid())
-  email      String    @unique
-  password   String
-  active     Boolean   @default(true)
-  created_at DateTime  @default(now())
-  updated_at DateTime?
-  last_login DateTime?
-  client     Client?
-  lawyer     Lawyer?
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  lastLogin DateTime?
+  client    Client?
+  lawyer    Lawyer?
 
   @@map("profiles")
 }
 
 model Client {
-  id        String @id @default(cuid())
-  name      String
-  profileId String @unique
+  id             String    @id
+  name           String
+  cpfNumber      String
+  rgNumber       String
+  profileId      String    @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime?
+  documentsPaths String?
 
   profile Profile @relation(fields: [profileId], references: [id])
 

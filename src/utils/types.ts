@@ -12,8 +12,6 @@ declare module 'fastify' {
 interface ProfilePayload {
   id: string
   email: string
-  profileId: string
-  role: string
 }
 
 declare module '@fastify/jwt' {
@@ -21,3 +19,5 @@ declare module '@fastify/jwt' {
     profile: ProfilePayload
   }
 }
+
+export type Replace<T, R> = Omit<T, keyof R> & R
