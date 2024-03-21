@@ -8,8 +8,10 @@ datasource db {
 }
 
 model Lawyer {
-  id        String  @id @default(cuid())
+  id        String  @id
   name      String
+  office    String
+  oabId     String
   profileId String  @unique
   profile   Profile @relation(fields: [profileId], references: [id])
 
@@ -17,7 +19,7 @@ model Lawyer {
 }
 
 model Profile {
-  id        String    @id @default(cuid())
+  id        String    @id
   email     String    @unique
   password  String
   active    Boolean   @default(true)

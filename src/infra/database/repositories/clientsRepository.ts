@@ -1,7 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type PrismaClient } from '@prisma/client'
-import { type ClientEntity } from '../../../app/entities/client'
+import { ClientEntity } from '../../../app/entities/client'
 import { type ClientsRepository } from 'src/app/repositories/clientsRepository'
 
+class ClientMapper {
+  static toDomain (data: any): ClientEntity | null {
+    if (data === null) {
+      return null
+    }
+
+    const client = new ClientEntity({
+      cpfNumber: data.cpfNumber,
+      name: data.name,
+      rgNumber: data.rgNumber,
+      profile: data.profile,
+      createdAt: data.createdAt
+    }, data.id)
+
+    return client
+  }
+}
 export class PrismaClientsRepository implements ClientsRepository {
   constructor (private readonly prisma: PrismaClient) {}
   async saveFiles (paths: string[], profileId: string): Promise<void> {
@@ -31,5 +49,15 @@ export class PrismaClientsRepository implements ClientsRepository {
         }
       }
     })
+  }
+
+  async getByProfileId (profileId: string): Promise<ClientEntity | null> {
+    const query = await this.prisma.client.findFirst({
+      where: {
+        profileId
+      }
+    })
+
+    return ClientMapper.toDomain(query)
   }
 }
