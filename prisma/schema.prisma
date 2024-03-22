@@ -7,17 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Lawyer {
-  id        String  @id
-  name      String
-  office    String
-  oabId     String
-  profileId String  @unique
-  profile   Profile @relation(fields: [profileId], references: [id])
-
-  @@map("lawyers")
-}
-
 model Profile {
   id        String    @id
   email     String    @unique
@@ -26,23 +15,69 @@ model Profile {
   createdAt DateTime  @default(now())
   updatedAt DateTime?
   lastLogin DateTime?
-  client    Client?
-  lawyer    Lawyer?
+
+  client Client?
+  Lawyer Lawyer?
 
   @@map("profiles")
 }
 
+model Lawyer {
+  id        String @id
+  profileId String @unique
+  name      String
+  office    String
+  oabId     String
+
+  cases   Case[]
+  profile Profile @relation(fields: [profileId], references: [id])
+
+  @@map("lawyers")
+}
+
 model Client {
   id             String    @id
+  profileId      String    @unique
   name           String
   cpfNumber      String
   rgNumber       String
-  profileId      String    @unique
+  phoneNumber    String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime?
   documentsPaths String?
 
+  cases   Case[]
   profile Profile @relation(fields: [profileId], references: [id])
 
   @@map("clients")
+}
+
+model CaseType {
+  id          String @id @default(uuid())
+  description String
+
+  cases Case[]
+
+  @@map("caseTypes")
+}
+
+model Case {
+  id            String    @id
+  clientId      String
+  lawyerId      String?
+  typeId        String
+  description   String
+  company       String
+  city          String
+  state         String
+  ocurrenceDate DateTime
+  documents     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime?
+
+  type   CaseType @relation(fields: [typeId], references: [id])
+  client Client   @relation(fields: [clientId], references: [id])
+  lawyer Lawyer?  @relation(fields: [lawyerId], references: [id])
+
+  @@map("cases")
 }

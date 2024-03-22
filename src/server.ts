@@ -2,13 +2,15 @@ import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import fjwt, { type FastifyJWT } from '@fastify/jwt'
 import fCookie from '@fastify/cookie'
 import multipart from '@fastify/multipart'
+import cors from '@fastify/cors'
 import { UNAUTHORIZED } from 'http-status'
-import { clientRoutes, profileRoutes } from './routes'
+import { casesRoutes, clientRoutes, profileRoutes } from './routes'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const fastify = Fastify({ logger: process.env.ENV === 'dev' ?? true })
+const fastify = Fastify()
 
+fastify.register(cors)
 fastify.register(multipart)
 // @ts-expect-error
 fastify.register(fjwt, { secret: process.env.SECRET_KEY })
@@ -44,6 +46,7 @@ fastify.get('/api/healthcheck', (req, res) => {
 
 fastify.register(profileRoutes, { prefix: '/api' })
 fastify.register(clientRoutes, { prefix: '/api' })
+fastify.register(casesRoutes, { prefix: '/api' })
 
 // @ts-expect-error
 fastify.listen({ port: process.env.APP_PORT }).then(() => {

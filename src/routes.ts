@@ -50,4 +50,56 @@ export async function clientRoutes (fastify: FastifyInstance): Promise<void> {
       await clientsController.uploadFiles(request, reply)
     }
   )
+
+  fastify.get(
+    '/clients/cases',
+    {
+      preHandler: [fastify.authenticate]
+    },
+    async (request, reply) => {
+      await clientsController.uploadFiles(request, reply)
+    }
+  )
+}
+
+export async function casesRoutes (fastify: FastifyInstance): Promise<void> {
+  fastify.get(
+    '/cases',
+    {
+      preHandler: [fastify.authenticate]
+    },
+    async (request, reply) => {
+      return await reply.send()
+    }
+  )
+
+  fastify.post(
+    '/cases',
+    {
+      preHandler: [fastify.authenticate]
+    },
+    async (request, reply) => {
+      return await reply.send()
+    }
+  )
+
+  fastify.patch(
+    '/cases/:id',
+    {
+      preHandler: [fastify.authenticate]
+    },
+    async (request, reply) => {
+      return await reply.send()
+    }
+  )
+
+  fastify.delete(
+    '/cases/:id',
+    {
+      preHandler: [fastify.authenticate]
+    },
+    async (request, reply) => {
+      return await reply.send()
+    }
+  )
 }

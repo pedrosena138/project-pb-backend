@@ -25,7 +25,7 @@ module.exports = {
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/unbound-method": "off",
-        "@typescript-eslint/no-extraneous-class": "off"
-        
+        "@typescript-eslint/no-extraneous-class": "off",
+        "@typescript-eslint/no-unsafe-argument": "off"
     }
 }
