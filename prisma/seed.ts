@@ -7,6 +7,10 @@ async function populateDatabase (): Promise<void> {
   const caseTypes = [{ description: 'event' }, { description: 'trip' }]
   await Promise.all(caseTypes.map(async type => await prisma.caseType.create({ data: type })))
 
+  const status = [{ description: 'opened' }, { description: 'closed' }]
+  await Promise.all(
+    status.map(async (s) => prisma.caseStatus.create({ data: s }))
+  )
   const client = {
     id: randomUUID(),
     name: 'name',
@@ -44,6 +48,7 @@ async function populateDatabase (): Promise<void> {
   })
 
   const [eventType, tripType] = await prisma.caseType.findMany()
+  const openedStatus = await prisma.caseStatus.findFirstOrThrow({ where: { description: 'opened' } })
 
   const cases = [
     {
@@ -52,6 +57,7 @@ async function populateDatabase (): Promise<void> {
       clientId: client.id,
       lawyerId: lawyer.id,
       typeId: eventType.id,
+      statusId: openedStatus.id,
       company: 'Company 1',
       city: 'Recife',
       state: 'Pernambuco',
@@ -63,6 +69,7 @@ async function populateDatabase (): Promise<void> {
       clientId: client.id,
       lawyerId: lawyer.id,
       typeId: tripType.id,
+      statusId: openedStatus.id,
       company: 'Company 2',
       city: 'Natal',
       state: 'Rio Grande do Norte',
@@ -73,10 +80,11 @@ async function populateDatabase (): Promise<void> {
 }
 
 async function cleanDatabase (): Promise<void> {
-  await prisma.client.deleteMany()
-  await prisma.lawyer.deleteMany()
   await prisma.case.deleteMany()
   await prisma.caseType.deleteMany()
+  await prisma.caseStatus.deleteMany()
+  await prisma.lawyer.deleteMany()
+  await prisma.client.deleteMany()
   await prisma.profile.deleteMany()
 }
 

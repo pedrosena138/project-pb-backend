@@ -52,6 +52,14 @@ model Client {
   @@map("clients")
 }
 
+model CaseStatus {
+  id          String @id @default(uuid())
+  description String
+  cases       Case[]
+
+  @@map("caseStatus")
+}
+
 model CaseType {
   id          String @id @default(uuid())
   description String
@@ -66,6 +74,7 @@ model Case {
   clientId      String
   lawyerId      String?
   typeId        String
+  statusId      String
   description   String
   company       String
   city          String
@@ -75,9 +84,10 @@ model Case {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime?
 
-  type   CaseType @relation(fields: [typeId], references: [id])
-  client Client   @relation(fields: [clientId], references: [id])
-  lawyer Lawyer?  @relation(fields: [lawyerId], references: [id])
+  type   CaseType   @relation(fields: [typeId], references: [id])
+  status CaseStatus @relation(fields: [statusId], references: [id])
+  client Client     @relation(fields: [clientId], references: [id])
+  lawyer Lawyer?    @relation(fields: [lawyerId], references: [id])
 
   @@map("cases")
 }
